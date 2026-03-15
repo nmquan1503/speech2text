@@ -54,16 +54,14 @@ def build(splits, out_prefix):
                 sampling_rate = sample["audio"]["sampling_rate"]
 
                 feat = transform(audio, sampling_rate)  # (lengths, num_features)
-                byte_data = feat.tobytes()
-                data_size = len(byte_data)
 
                 offsets.append(offset)
                 lengths.append(feat.shape[0])
 
-                ff.write(byte_data)
+                ff.write(feat.tobytes())
                 ft.write(sample["text"] + "\n")
     
-                offset += data_size
+                offset += feat.size
 
     np.save(f"{out_prefix}_offsets.npy", np.array(offsets, dtype=np.int64))
     np.save(f"{out_prefix}_lengths.npy", np.array(lengths, dtype=np.int32))
