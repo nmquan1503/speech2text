@@ -9,12 +9,12 @@ def train_tokenizer(
     spm.SentencePieceTrainer.Train(
         input=text_path,
         model_prefix=model_prefix,
-        vocab_size=vocab_size + 1,
+        vocab_size=vocab_size,
         model_type="unigram",
         character_coverage=1.0,
+        unk_id=0,
         bos_id=1,
         eos_id=2,
-        unk_id=vocab_size,
         pad_id=-1,
         minloglevel=2
     )
@@ -35,6 +35,7 @@ class Tokenizer:
         self.sp = spm.SentencePieceProcessor()
         self.sp.Load(model_path)
 
+        self.unk_id = self.sp.unk_id()
         self.bos_id = self.sp.bos_id()
         self.eos_id = self.sp.eos_id()
     
