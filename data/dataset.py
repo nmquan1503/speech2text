@@ -26,7 +26,7 @@ class ASRDataset(Dataset):
         tgt = self.targets[index]
 
         return {
-            "feature": torch.from_numpy(feat),
+            "feature": torch.from_numpy(feat.copy()),
             "target": torch.tensor(tgt, dtype=torch.long)
         }
 

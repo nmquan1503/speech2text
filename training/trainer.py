@@ -41,7 +41,7 @@ class Trainer:
 
             loss = self.criterion(
                 logits.view(-1, config.VOCAB_SIZE),
-                labels.view(-1)
+                labels.reshape(-1)
             )
 
             loss.backward()
@@ -67,7 +67,7 @@ class Trainer:
             logits = self.model(features, feature_lengths, decoder_input)
             
             loss = self.criterion(
-                logits.reshape(-1, config.VOCAB_SIZE),
+                logits.view(-1, config.VOCAB_SIZE),
                 labels.reshape(-1)
             )
 

@@ -26,7 +26,7 @@ NUM_DECODER_LAYERS = 2
 
 
 # Training Config
-BATCH_SIZE = 32
+BATCH_SIZE = 16
 NUM_EPOCHS = 10
 MODEL_PATH = "model.pt"
 LEARNING_RATE = 3e-4
