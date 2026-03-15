@@ -1,15 +1,13 @@
 import sentencepiece as spm
 from pathlib import Path
 
-def train_tokenizer(
-    text_path: str,
-    model_prefix: str, 
-    vocab_size: int = 1000
-):
+import config
+
+def train_tokenizer():
     spm.SentencePieceTrainer.Train(
-        input=text_path,
-        model_prefix=model_prefix,
-        vocab_size=vocab_size,
+        input=f"{config.TRAIN_PREFIX}_texts.txt",
+        model_prefix=config.SPM_MODEL_PATH.split(".model")[0],
+        vocab_size=config.VOCAB_SIZE,
         model_type="unigram",
         character_coverage=1.0,
         unk_id=0,
@@ -20,20 +18,12 @@ def train_tokenizer(
     )
 
 class Tokenizer:
-    def __init__(
-        self, 
-        model_path: str, 
-        text_path: str | None = None, 
-        vocab_size: int = 1000
-    ):
-        if not Path(model_path).exists():
-            if text_path is None:
-                raise ValueError("text_path required to train tokenizer")
-            model_prefix = model_path.split(".model")[0]
-            train_tokenizer(text_path, model_prefix, vocab_size)
+    def __init__(self):
+        if not Path(config.SPM_MODEL_PATH).exists():
+            train_tokenizer()
         
         self.sp = spm.SentencePieceProcessor()
-        self.sp.Load(model_path)
+        self.sp.Load(config.SPM_MODEL_PATH)
 
         self.unk_id = self.sp.unk_id()
         self.bos_id = self.sp.bos_id()

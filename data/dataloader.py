@@ -3,6 +3,7 @@ import torch
 from functools import partial
 
 from data.dataset import ASRDataset
+import config
 
 def collate_fn(batch, pad_id):
     features = [item["feature"] for item in batch]
@@ -22,7 +23,6 @@ def collate_fn(batch, pad_id):
 def build_dataloader(
     prefix,
     tokenizer,
-    batch_size=32,
     shuffle=True
 ):
     dataset = ASRDataset(prefix, tokenizer)
@@ -31,7 +31,7 @@ def build_dataloader(
 
     return DataLoader(
         dataset,
-        batch_size=batch_size,
+        batch_size=config.BATCH_SIZE,
         shuffle=shuffle,
         num_workers=4,
         pin_memory=True,

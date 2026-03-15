@@ -1,6 +1,8 @@
 import torch
 from tqdm import tqdm
 
+import config
+
 class Trainer:
     def __init__(
         self, 
@@ -8,17 +10,14 @@ class Trainer:
         train_loader,
         dev_loader,
         optimizer, 
-        criterion,
-        num_epochs=10,
-        save_path="best_model.pt"
+        criterion
     ):
         self.model = model
         self.train_loader = train_loader
         self.dev_loader = dev_loader
         self.optimizer = optimizer
         self.criterion = criterion
-        self.num_epochs = num_epochs
-        self.save_path = save_path
+
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         
         self.model.to(self.device)
@@ -39,9 +38,9 @@ class Trainer:
             labels = targets[:, 1:]
 
             logits = self.model(features, feature_lengths, decoder_input)
-            vocab_size = logits.size(-1)
+
             loss = self.criterion(
-                logits.view(-1, vocab_size),
+                logits.view(-1, config.VOCAB_SIZE),
                 labels.view(-1)
             )
 
@@ -66,9 +65,9 @@ class Trainer:
             labels = targets[:, 1:]
 
             logits = self.model(features, feature_lengths, decoder_input)
-            vocab_size = logits.size(-1)
+            
             loss = self.criterion(
-                logits.reshape(-1, vocab_size),
+                logits.reshape(-1, config.VOCAB_SIZE),
                 labels.reshape(-1)
             )
 
@@ -77,7 +76,7 @@ class Trainer:
         return total_loss / len(self.dev_loader)
 
     def train(self):
-        for epoch in range(1, self.num_epochs + 1):
+        for epoch in range(1, config.NUM_EPOCHS + 1):
             print("=" * 10 + f" Epoch {epoch} " + "=" * 10)
             
             train_loss = self._train_one_epoch()
@@ -87,5 +86,5 @@ class Trainer:
 
             if dev_loss < self.best_dev_loss:
                 self.best_dev_loss = dev_loss
-                torch.save(self.model.state_dict(), self.save_path)
+                torch.save(self.model.state_dict(), config.MODEL_PATH)
                 print(">>> Save best model")
