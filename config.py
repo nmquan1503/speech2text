@@ -3,6 +3,8 @@ TRAIN_PREFIX = "train"
 TRAIN_SPLITS = ["train.clean.100"]
 DEV_PREFIX = "dev"
 DEV_SPLITS = ["validation.clean"]
+TEST_PREFIX = "test"
+TEST_SPLITS = ["test.clean"]
 
 
 # Audio Config
@@ -30,4 +32,6 @@ NUM_EPOCHS = 10
 MODEL_PATH = "model.pt"
 LEARNING_RATE = 3e-4
 
-
+# Inference Config
+MAX_NEW_TOKENS = 50
+TEMPERATURE = 1.0
