@@ -18,8 +18,7 @@ def train():
         model_dim=config.MODEL_DIM,
         state_dim=config.STATE_DIM,
         conv_kernel=config.CONV_KERNEL,
-        num_encoder_layers=config.NUM_ENCODER_LAYERS,
-        num_decoder_layers=config.NUM_DECODER_LAYERS
+        num_layers=config.NUM_LAYERS,
     ))
 
     total_params = sum(p.numel() for p in model.parameters())
