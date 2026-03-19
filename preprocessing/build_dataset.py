@@ -39,3 +39,4 @@ def build(splits, prefix):
 if __name__ == "__main__":
     build(config.TRAIN_SPLITS, config.TRAIN_PREFIX)
     build(config.DEV_SPLITS, config.DEV_PREFIX)
+    build(config.TEST_SPLITS, config.TEST_PREFIX)
