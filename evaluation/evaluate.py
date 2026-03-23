@@ -22,7 +22,7 @@ def evaluate():
         num_layers=config.NUM_LAYERS,
     )).to(device)
 
-    model.load_state_dict(torch.load(config.MODEL_PATH, map_location=device))
+    model.load_state_dict(torch.load(config.BEST_MODEL_PATH, map_location=device))
 
     model.eval()
 
