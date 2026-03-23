@@ -23,7 +23,19 @@ class Trainer:
         self.model.to(self.device)
 
         self.best_dev_loss = float("inf")
+        self.train_losses = []
+        self.dev_losses = []
+        self.start_epoch = 1
     
+        if config.RESUME_TRAINING:
+            checkpoint = torch.load(config.LAST_CHECKPOINT_PATH, map_location=self.device)
+            self.model.load_state_dict(checkpoint["model"])
+            self.optimizer.load_state_dict(checkpoint["optimizer"])
+            self.train_losses = checkpoint["train_losses"]
+            self.dev_losses = checkpoint["dev_losses"]
+            self.best_dev_loss = min(self.dev_losses)
+            self.start_epoch = len(self.train_losses) + 1
+
     def _train_one_epoch(self):
         self.model.train()
         total_loss = 0.0
@@ -76,15 +88,24 @@ class Trainer:
         return total_loss / len(self.dev_loader)
 
     def train(self):
-        for epoch in range(1, config.NUM_EPOCHS + 1):
+        for epoch in range(self.start_epoch, self.start_epoch + config.NUM_EPOCHS):
             print("=" * 10 + f" Epoch {epoch} " + "=" * 10)
             
             train_loss = self._train_one_epoch()
             dev_loss = self._eval()
+            self.train_losses.append(train_loss)
+            self.dev_losses.append(dev_loss)
             print(f"Train loss: {train_loss:.4f}")
             print(f"Dev loss: {dev_loss:.4f}")
 
             if dev_loss < self.best_dev_loss:
                 self.best_dev_loss = dev_loss
-                torch.save(self.model.state_dict(), config.MODEL_PATH)
+                torch.save(self.model.state_dict(), config.BEST_MODEL_PATH)
                 print(">>> Save best model")
+            
+            torch.save({
+                "model": self.model.state_dict(),
+                "optimizer": self.optimizer.state_dict(),
+                "train_losses": self.train_losses,
+                "dev_losses": self.dev_losses
+            }, config.LAST_CHECKPOINT_PATH)

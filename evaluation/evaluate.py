@@ -10,6 +10,7 @@ from ssm_mamba import ASRModelConfig, ASRModel
 def evaluate():
     tokenizer = Tokenizer()
     test_loader = build_dataloader(config.TEST_PREFIX, tokenizer, False)
+    device = "cuda" if torch.cuda.is_available() else "cpu"
     model = ASRModel(ASRModelConfig(
         vocab_size=config.VOCAB_SIZE,
         bos_token_id=tokenizer.bos_id,
@@ -19,9 +20,7 @@ def evaluate():
         state_dim=config.STATE_DIM,
         conv_kernel=config.CONV_KERNEL,
         num_layers=config.NUM_LAYERS,
-    ))
-
-    device = next(model.parameters()).device
+    )).to(device)
 
     model.load_state_dict(torch.load(config.MODEL_PATH, map_location=device))
 

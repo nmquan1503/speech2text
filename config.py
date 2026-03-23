@@ -29,8 +29,10 @@ NUM_LAYERS = 12
 # Training Config
 BATCH_SIZE = 16
 NUM_EPOCHS = 10
-MODEL_PATH = "model.pt"
-LEARNING_RATE = 3e-4
+LAST_CHECKPOINT_PATH = "last_checkpoint.pt"
+BEST_MODEL_PATH = "best_model.pt"
+LEARNING_RATE = 1e-3
+RESUME_TRAINING = False
 
 # Inference Config
 MAX_NEW_TOKENS = 50
